@@ -2,6 +2,57 @@
 
 A containerized AI-powered assistant for medical document analysis and question-answering. Built with FastAPI, Streamlit, and OpenAI's language models.
 
+# 💻 System Requirements
+
+## Hardware Requirements
+
+### Minimum Specifications
+- **CPU**: x86_64 processor (Intel/AMD) or ARM64 (Apple Silicon, ARM-based systems)
+- **RAM**: 8 GB (for small 1B-3B models)
+- **Storage**: 20 GB free disk space (10 GB for Docker base + models)
+- **GPU** (optional): NVIDIA GPU with 4 GB VRAM or Apple Silicon
+
+### Recommended Specifications
+- **CPU**: Modern multi-core processor (Intel Core i5/i7, AMD Ryzen 5/7+, Apple M1/M2+)
+- **RAM**: 16 GB or more
+- **Storage**: 50+ GB SSD for multiple models
+- **GPU**: NVIDIA GPU with 8+ GB VRAM for optimal performance
+
+## Memory Requirements by Model Size
+
+| Model Size | RAM (CPU-only) | VRAM (GPU) | Disk Space | Example Models |
+|------------|----------------|------------|------------|----------------|
+| 1B-3B | 4-8 GB | 4-6 GB | 1-3 GB | llama3.2:1b, phi-3.5-mini, smollm |
+| 7B-8B | 8-16 GB | 8-12 GB | 4-5 GB | llama3.1, mistral, medllama2 |
+| 13B-14B | 16-24 GB | 12-16 GB | 8-10 GB | phi4, vicuna-13b |
+| 30B-40B | 32-64 GB | 24+ GB | 20-30 GB | Larger specialized models |
+| 70B+ | 64-128 GB | 48+ GB | 40-80 GB | llama3.3:70b |
+
+*Note: Quantized models (Q4, Q5) use 30-50% less memory than listed values.*
+
+## Performance: CPU vs GPU
+
+### CPU-Only Inference
+- **Speed**: 3-6 tokens/second (modern processors)
+- **Use cases**: Batch processing, development, non-interactive applications
+- **Pros**: No GPU required, works on any system
+- **Cons**: 10-20x slower than GPU inference
+
+### GPU-Accelerated Inference
+- **Speed**: 40-100+ tokens/second (depending on GPU and model)
+- **Use cases**: Interactive chatbots, real-time applications, production RAG systems
+- **Pros**: Fast response times, handles concurrent requests
+- **Cons**: Requires compatible NVIDIA GPU or Apple Silicon
+
+### Performance Benchmarks
+| Hardware | Model Size | Tokens/Second |
+|----------|------------|---------------|
+| Ryzen 5 3600 (CPU) | 7B | 3-6 t/s |
+| NVIDIA GTX 1070 (8GB) | 7B | 40-45 t/s |
+| NVIDIA RTX 3090 (24GB) | 7B | 80-100 t/s |
+| Apple M1 | 7B | 25-35 t/s |
+
+
 ## 🏗️ Architecture
 
 The project follows a modular architecture with clear separation of concerns:
@@ -188,6 +239,15 @@ The modular architecture allows for easy maintenance and testing:
 3. **Alternative vector stores**: Add implementations in `src/vector_store/`
 4. **New API endpoints**: Extend `src/api/main.py`
 
+### Adding New Features
+
+1. **New document formats**: Extend `src/document_digestion/processor.py`
+2. **Different LLM providers**: Implement new classes in `src/llm/`
+### Development path
+AI assistance was used heavily to avoid 
+heavy coding to:
+1. create an initial folder structure and initial documentation of the repo
+2. generate docker
 ### Testing
 
 ```bash
@@ -233,8 +293,6 @@ docker-compose build -:
 ```
 In case, local LLM it is desired, install Ollama localy and proceed to charge LLM with the following steps:
 
-
-
 ```bash
 docker-compose up ollama -d
 ```
@@ -248,6 +306,29 @@ And load model defined in .env
 ```bash
 docker-compose up ollama -d
 ```
+upload  LLM llama3.2:1b to ollama: (change the LLM model according your PC, needs, required performances...)
+
+```bash
+docker exec -it ollama ollama pull llama3.2:1b && docker exec -it ollama ollama pull nomic-embed-text
+docker exec -it medical-assistant-ollama ollama pull llama3.2:1b
+```
+
+
+to check with models are already uploaded in the Ollama docker, check in browser:
+
+[http://localhost:11434/api/tags](http://localhost:11434/api/tags)
+
+Start services with dockers It includes Ollama if required (avoid docker-compose.ollama.yml in case you use an openai's API-Key (It can take up to 10-15 minutes depending on model and net's speed)
+
+)
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.ollama.yml up --build
+```
+
+
+
+
 ## 🔧 Troubleshooting
 
 ### Common Issues

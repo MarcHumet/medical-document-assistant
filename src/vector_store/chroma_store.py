@@ -5,7 +5,6 @@ import logging
 from typing import List, Optional, Dict, Any
 import numpy as np
 from langchain_core.documents import Document
-from langchain_openai import OpenAIEmbeddings
 
 logger = logging.getLogger(__name__)
 
@@ -13,9 +12,9 @@ logger = logging.getLogger(__name__)
 class ChromaVectorStore:
     """Simple vector store implementation without ChromaDB dependency."""
     
-    def __init__(self, embeddings: OpenAIEmbeddings, collection_name: str = "medical_docs"):
+    def __init__(self, embeddings_manager, collection_name: str = "medical_docs"):
         """Initialize the vector store."""
-        self.embeddings = embeddings
+        self.embeddings = embeddings_manager
         self.collection_name = collection_name
         self.documents: List[Document] = []
         self.document_embeddings: List[List[float]] = []

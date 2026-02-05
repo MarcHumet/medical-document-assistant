@@ -4,7 +4,6 @@ Question-Answering chain implementation for medical documents.
 import logging
 from typing import List, Dict, Any
 from langchain_core.documents import Document
-from langchain_openai import ChatOpenAI
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +11,7 @@ logger = logging.getLogger(__name__)
 class QAChain:
     """Simple Question-Answering chain for medical documents."""
     
-    def __init__(self, llm: ChatOpenAI):
+    def __init__(self, llm):
         """Initialize the QA chain."""
         self.llm = llm
         self.retriever = None
@@ -61,8 +60,7 @@ Answer: """
             prompt = self._get_qa_prompt(context, question)
             
             # Get answer from LLM
-            response = self.llm.invoke(prompt)
-            answer = response.content if hasattr(response, 'content') else str(response)
+            answer = self.llm.invoke(prompt)
             
             # Extract source information
             sources = []

@@ -212,6 +212,49 @@ async def list_documents(current_user: User = Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=f"Error listing documents: {str(e)}")
 
 
+@app.get("/test-ollama")
+async def test_ollama():
+    """Test Ollama LLM with a simple question."""
+    try:
+        from src.llm.chat import ChatLLM
+        import os
+        
+        # Ensure we're using Ollama
+        provider = os.getenv("LLM_PROVIDER", "ollama")
+        
+        logger.info(f"Testing LLM with provider: {provider}")
+        
+        # Initialize ChatLLM
+        chat_llm = ChatLLM()
+        
+        # Ask a simple question
+        question = "What is 2 + 2?"
+        logger.info(f"Asking question: {question}")
+        response = chat_llm.invoke(question)
+        
+        logger.info(f"Response: {response}")
+        
+        return {
+            "success": True,
+            "question": question,
+            "response": response,
+            "provider": provider,
+            "model": chat_llm.model_name,
+            "endpoint": os.getenv("LLM_ENDPOINT", "http://localhost:11434/v1")
+        }
+        
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"Error testing Ollama: {error_msg}")
+        
+        return {
+            "success": False,
+            "question": "What is 2 + 2?",
+            "error": error_msg,
+            "provider": os.getenv("LLM_PROVIDER", "ollama")
+        }
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

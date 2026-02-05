@@ -16,8 +16,16 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Set environment variables to disable langsmith
+ENV LANGCHAIN_TRACING_V2=false
+ENV LANGCHAIN_ENDPOINT=""
+ENV LANGCHAIN_API_KEY=""
+
 # Copy source code
 COPY . .
+
+# Create logs directory for loguru
+RUN mkdir -p /app/logs
 
 # Create uploads directory
 RUN mkdir -p uploads
