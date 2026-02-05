@@ -31,6 +31,7 @@ services:
       - OLLAMA_EMBEDDING_MODEL=${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}
       - USE_OLLAMA=${USE_OLLAMA:-false}
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      - VECTOR_STORE_PATH=/app/chroma_db
       - API_SECRET_KEY=${API_SECRET_KEY:-dev-secret-key-change-in-production}
       - DEMO_USERNAME=${DEMO_USERNAME:-medical_researcher}
       - DEMO_PASSWORD=${DEMO_PASSWORD:-demo_password_123}
