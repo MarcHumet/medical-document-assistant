@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: medical-assistant-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    networks:
+      - medical-assistant-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  api:
+    build: .
+    container_name: medical-assistant-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - USE_OLLAMA=${USE_OLLAMA:-false}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama2}
+      - API_SECRET_KEY=${API_SECRET_KEY:-dev-secret-key-change-in-production}
+      - DEMO_USERNAME=${DEMO_USERNAME:-medical_researcher}
+      - DEMO_PASSWORD=${DEMO_PASSWORD:-demo_password_123}
+      - UPLOAD_DIR=/app/uploads
+      - API_URL=http://api:8000
+    volumes:
+      - uploads_data:/app/uploads
+      - chroma_data:/app/chroma_db
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - ollama
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - medical-assistant-network
+
+  frontend:
+    build: .
+    container_name: medical-assistant-frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000
+      - DEMO_USERNAME=${DEMO_USERNAME:-medical_researcher}
+      - DEMO_PASSWORD=${DEMO_PASSWORD:-demo_password_123}
+    depends_on:
+      - api
+    command: streamlit run app.py --server.port 8501 --server.address 0.0.0.0
+    networks:
+      - medical-assistant-network
+
+volumes:
+  uploads_data:
+  chroma_data:
+  ollama_data:
+
+networks:
+  medical-assistant-network:
+    driver: bridge

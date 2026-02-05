@@ -19,34 +19,40 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-.env
-.python-version
 
-# Virtual Environment
+# Virtual environments
 venv/
-ENV/
 env/
+ENV/
 
-# Environment variables
-.env
-
-# IDEs
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
-
-# Uploads
-uploads/
-*.pdf
-*.txt
-!requirements.txt
 
 # Logs
 *.log
 logs/
 
-# OS
+# Environment variables
+.env
+
+# Uploads and data
+uploads/
+chroma_db/
+*.db
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+
+# Docker
+.dockerignore
+
+# macOS
 .DS_Store
+
+# System files
 Thumbs.db

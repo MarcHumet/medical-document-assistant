@@ -1,244 +1,291 @@
-# Medical Document Assistant
+# 🏥 Medical Document Assistant
 
-A local prototype assistant that helps researchers interact with clinical and medical documents using AI-powered question-answering.
+A containerized AI-powered assistant for medical document analysis and question-answering. Built with FastAPI, Streamlit, and OpenAI's language models.
 
-## Features
+## 🏗️ Architecture
 
-- 📄 **Document Upload**: Support for PDF and text files
-- 💬 **Intelligent Q&A**: Ask questions and get contextual answers using OpenAI
-- 🔐 **Protected API**: Secure endpoints with JWT authentication
-- 🎯 **Context-Aware**: Answers include source citations
-- 📊 **Observability**: Built-in logging for monitoring
-- 🚀 **Extensible**: Designed for future MCP (Model Context Protocol) integration
+The project follows a modular architecture with clear separation of concerns:
 
-## Architecture
-
-### Backend (FastAPI)
-- Protected REST API with JWT authentication
-- Document processing (PDF, TXT)
-- Vector-based document search using ChromaDB
-- OpenAI integration for question-answering
-- Comprehensive logging
-
-### Frontend (Streamlit)
-- User-friendly chat interface
-- Document upload functionality
-- Source citation display
-- Session management
-
-## Prerequisites
-
-- Python 3.8+
-- OpenAI API key
-
-## Installation
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/MarcHumet/medical-document-assistant.git
-cd medical-document-assistant
+```
+medical-document-assistant/
+├── src/                           # Source code
+│   ├── api/                       # FastAPI application
+│   │   ├── __init__.py
+│   │   └── main.py               # API routes and endpoints
+│   ├── auth/                     # Authentication module
+│   │   ├── __init__.py
+│   │   └── auth.py              # JWT authentication
+│   ├── document_digestion/       # Document processing
+│   │   ├── __init__.py
+│   │   └── processor.py         # PDF/TXT extraction & chunking
+│   ├── llm/                      # Language model integration
+│   │   ├── __init__.py
+│   │   ├── chat.py              # OpenAI chat wrapper
+│   │   └── qa_chain.py          # Question-answering chain
+│   ├── vector_store/             # Vector database
+│   │   ├── __init__.py
+│   │   ├── chroma_store.py      # ChromaDB implementation
+│   │   └── embeddings.py       # OpenAI embeddings
+│   ├── __init__.py
+│   └── document_processor.py    # Main orchestrator
+├── app.py                        # Streamlit frontend
+├── config.py                     # Configuration management
+├── requirements.txt              # Python dependencies
+├── Dockerfile                    # Container definition
+├── docker-compose.yml           # Multi-service orchestration
+├── start.sh                     # Startup script
+├── .env.template                # Environment variables template
+└── README.md                    # This file
 ```
 
-2. **Create a virtual environment**
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+## 🚀 Quick Start
 
-3. **Install dependencies**
-```bash
-pip install -r requirements.txt
-```
+### Option 1: Docker (Recommended)
 
-4. **Set up environment variables**
-```bash
-cp .env.example .env
-```
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd medical-document-assistant
+   ```
 
-Edit `.env` and add your OpenAI API key:
-```
-OPENAI_API_KEY=your_openai_api_key_here
-```
+2. **Configure environment:**
+   ```bash
+   cp .env.template .env
+   # Edit .env and add your OPENAI_API_KEY
+   ```
 
-## Usage
+3. **Start the application:**
+   ```bash
+   ./start.sh docker
+   # or simply
+   ./start.sh
+   ```
 
-### Running the Application
+4. **Access the application:**
+   - Frontend: http://localhost:8501
+   - API: http://localhost:8000
+   - API Documentation: http://localhost:8000/docs
 
-**Option 1: Run both services**
+### Option 2: Development Mode
 
-Terminal 1 - Start the API server:
-```bash
-python api.py
-```
-The API will be available at http://localhost:8000
+## 📋 Features
 
-Terminal 2 - Start the Streamlit app:
-```bash
-streamlit run app.py
-```
-The web interface will open at http://localhost:8501
+### Core Functionality
+- 📄 **Document Processing**: Upload and process PDF and TXT medical documents
+- 🤖 **AI-Powered Q&A**: Ask questions and get contextual answers from your documents
+- 🔍 **Source Attribution**: See exactly where answers come from in your documents
+- 🔐 **Secure API**: JWT-based authentication for all operations
 
-**Option 2: Use the startup script (Unix/Linux/Mac)**
-```bash
-chmod +x start.sh
-./start.sh
-```
+### Technical Features
+- 🐳 **Containerized**: Fully containerized with Docker and Docker Compose
+- 🏗️ **Modular Architecture**: Clean separation of concerns across modules
+- 📊 **Vector Search**: Efficient similarity search using ChromaDB and OpenAI embeddings
+- 🔄 **Hot Reload**: Development mode with auto-reload capabilities
+- 📝 **API Documentation**: Auto-generated OpenAPI/Swagger documentation
 
-### Using the Application
+## 🔧 Configuration
 
-1. **Login**: Use the demo credentials (pre-filled):
-   - Username: `medical_researcher`
-   - Password: `demo_password_123`
+### Environment Variables
 
-2. **Upload Documents**: 
-   - Click "Browse files" in the sidebar
-   - Select a PDF or TXT medical document
-   - Click "Process Document"
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `OPENAI_API_KEY` | Your OpenAI API key | **Required** |
+| `API_SECRET_KEY` | JWT signing secret | `dev-secret-key-change-in-production` |
+| `DEMO_USERNAME` | Demo username | `medical_researcher` |
+| `DEMO_PASSWORD` | Demo password | `demo_password_123` |
+| `UPLOAD_DIR` | Document upload directory | `uploads` |
+| `MAX_FILE_SIZE_MB` | Maximum file size in MB | `10` |
 
-3. **Ask Questions**:
-   - Type your question in the chat input
-   - Review the AI-generated answer
-   - Expand "View Sources" to see citations
+### Production Considerations
 
-### API Usage
+For production deployment:
 
-#### Get Access Token
+1. **Security**: Change default credentials and JWT secret
+2. **API Key**: Use secure secret management for OpenAI API key
+3. **Volumes**: Ensure persistent storage for uploads and vector database
+4. **Networking**: Configure proper firewall and SSL termination
+5. **Scaling**: Consider using load balancers for high availability
+
+## 📚 API Documentation
+
+### Authentication
+
+The API uses JWT Bearer token authentication. Get a token by posting credentials to `/token`:
+
 ```bash
 curl -X POST "http://localhost:8000/token" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=medical_researcher&password=demo_password_123"
 ```
 
-#### Upload Document
-```bash
-curl -X POST "http://localhost:8000/upload" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -F "file=@path/to/document.pdf"
-```
+### Main Endpoints
 
-#### Ask Question
-```bash
-curl -X POST "http://localhost:8000/ask" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"question": "What are the main findings?"}'
-```
+- `POST /token` - Get authentication token
+- `POST /upload` - Upload and process a document (auth required)
+- `POST /ask` - Ask a question about documents (auth required)
+- `GET /documents` - List uploaded documents (auth required)
+- `GET /health` - Health check endpoint
 
-## API Documentation
+Full API documentation is available at http://localhost:8000/docs when running.
 
-Once the API is running, visit:
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+## 🔍 Usage Examples
 
-## Project Structure
+### Uploading a Document
 
-```
-medical-document-assistant/
-├── api.py                  # FastAPI application
-├── app.py                  # Streamlit frontend
-├── auth.py                 # Authentication utilities
-├── config.py              # Configuration management
-├── document_processor.py  # Document processing and Q&A
-├── requirements.txt       # Python dependencies
-├── .env.example          # Environment variables template
-├── .gitignore            # Git ignore rules
-└── README.md             # This file
-```
-
-## Configuration
-
-Environment variables in `.env`:
-
-- `OPENAI_API_KEY`: Your OpenAI API key (required)
-- `API_SECRET_KEY`: Secret key for JWT tokens
-- `API_ALGORITHM`: JWT algorithm (default: HS256)
-- `ACCESS_TOKEN_EXPIRE_MINUTES`: Token expiration time
-- `UPLOAD_DIR`: Directory for uploaded files
-- `MAX_FILE_SIZE_MB`: Maximum file size limit
-- `DEMO_USERNAME`: Demo user username
-- `DEMO_PASSWORD`: Demo user password
-
-## Security Considerations
-
-⚠️ **Important for Production:**
-
-1. **Change default credentials** in `.env`
-2. **Use strong secret keys** for JWT
-3. **Implement proper user management** (replace demo auth)
-4. **Add HTTPS** for production deployment
-5. **Validate and sanitize** all file uploads
-6. **Set up rate limiting** to prevent abuse
-7. **Store secrets** in secure vaults (not .env files)
-
-## Good Prompting Practices
-
-The system uses carefully crafted prompts for:
-
-1. **Medical Domain Expertise**: Instructions for handling medical terminology
-2. **Source Attribution**: Always cite sources for answers
-3. **Uncertainty Handling**: Explicitly state when information is unavailable
-4. **Context Awareness**: Use document context effectively
-5. **Accuracy Priority**: Prioritize correctness over speculation
-
-See `document_processor.py` for the prompt template.
-
-## Extensibility & MCP Integration
-
-The codebase is designed for extensibility:
-
-- **Modular Architecture**: Separate concerns (auth, processing, API)
-- **Vector Store**: ChromaDB for flexible document retrieval
-- **LangChain Integration**: Easy to add new chains and agents
-- **MCP Ready**: Structure supports future Model Context Protocol integration
-- **Pluggable LLMs**: Easy to swap OpenAI for other providers
-
-## Observability
-
-The system includes:
-
-- **Structured Logging**: All operations logged with context
-- **Request Tracking**: User actions and API calls tracked
-- **Error Handling**: Comprehensive error logging
-- **Performance Metrics**: Document processing statistics
-
-Logs include:
-- User authentication events
-- Document upload and processing
-- Question-answering operations
-- Errors and exceptions
-
-## Troubleshooting
-
-**API Connection Error**
-- Ensure the API server is running on port 8000
-- Check firewall settings
-
-**OpenAI API Error**
-- Verify your API key in `.env`
-- Check your OpenAI account has credits
-
-**Document Processing Error**
-- Ensure file is valid PDF or TXT
-- Check file size is under limit
-- Verify file is not corrupted
-
-**Authentication Error**
-- Check credentials match `.env` settings
-- Ensure token hasn't expired
-
-## Development
-
-### Adding New Document Types
-
-1. Add extraction method in `document_processor.py`
-2. Update file type validation in `api.py`
-3. Add file type to Streamlit uploader in `app.py`
-
-### Customizing the LLM
-
-Edit `document_processor.py`:
 ```python
-self.llm = ChatOpenAI(
+import requests
+
+# Get token
+auth_response = requests.post(
+    "http://localhost:8000/token",
+    data={"username": "medical_researcher", "password": "demo_password_123"}
+)
+token = auth_response.json()["access_token"]
+
+# Upload document
+files = {"file": ("document.pdf", open("document.pdf", "rb"), "application/pdf")}
+headers = {"Authorization": f"Bearer {token}"}
+
+response = requests.post(
+    "http://localhost:8000/upload",
+    headers=headers,
+    files=files
+)
+```
+
+### Asking Questions
+
+```python
+# Ask a question
+question_data = {"question": "What are the main findings of this study?"}
+response = requests.post(
+    "http://localhost:8000/ask",
+    headers=headers,
+    json=question_data
+)
+
+result = response.json()
+print(f"Answer: {result['answer']}")
+print(f"Sources: {result['sources']}")
+```
+
+## 🛠️ Development
+
+### Project Structure
+
+The modular architecture allows for easy maintenance and testing:
+
+- **`src/document_digestion/`**: Handles PDF/TXT parsing and text chunking
+- **`src/vector_store/`**: Manages document embeddings and similarity search
+- **`src/llm/`**: Integrates with OpenAI's language models
+- **`src/api/`**: FastAPI application with protected endpoints
+- **`src/auth/`**: JWT authentication and user management
+
+### Adding New Features
+
+1. **New document formats**: Extend `src/document_digestion/processor.py`
+2. **Different LLM providers**: Implement new classes in `src/llm/`
+3. **Alternative vector stores**: Add implementations in `src/vector_store/`
+4. **New API endpoints**: Extend `src/api/main.py`
+
+### Testing
+
+```bash
+# Run in development mode
+./start.sh dev
+
+# Test API endpoints
+curl http://localhost:8000/health
+
+# Access interactive documentation
+open http://localhost:8000/docs
+```
+
+## 🐳 Docker Services
+
+The application runs as two services:
+
+1. **API Service** (`medical-assistant-api`):
+   - FastAPI application with document processing
+   - Exposed on port 8000
+   - Handles authentication, file uploads, and Q&A
+
+2. **Frontend Service** (`medical-assistant-frontend`):
+   - Streamlit web interface
+   - Exposed on port 8501
+   - Provides user-friendly chat interface
+
+### Docker Commands
+
+```bash
+# Build and start services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Rebuild services
+docker-compose build -:
+-no-cache
+```
+In case, local LLM it is desired, install Ollama localy and proceed to charge LLM with the following steps:
+
+
+
+```bash
+docker-compose up ollama -d
+```
+
+And load model defined in .env
+```bash
+./setup-ollama.sh
+```
+
+
+```bash
+docker-compose up ollama -d
+```
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **OpenAI API Key Error**:
+   - Ensure your `.env` file contains a valid `OPENAI_API_KEY`
+   - Check API key permissions and billing status
+
+2. **Port Conflicts**:
+   - Change ports in `docker-compose.yml` if 8000/8501 are in use
+   - Update `API_URL` environment variable accordingly
+
+3. **Docker Build Issues**:
+   - Clear Docker cache: `docker system prune -a`
+   - Ensure Docker and Docker Compose are installed and running
+
+4. **File Upload Errors**:
+   - Check file size limits (default 10MB)
+   - Ensure upload directory permissions are correct
+   - Verify supported file formats (PDF, TXT)
+
+## 📄 License
+
+This project is intended for educational and research purposes. Please ensure compliance with OpenAI's usage policies and your organization's data handling requirements when processing medical documents.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Follow the existing code style and architecture
+4. Add tests for new functionality
+5. Submit a pull request
+
+---
+
+**Note**: This application is designed for research and educational purposes. For production use with real medical data, ensure proper security measures, data privacy compliance, and regulatory adherence.
     model_name="gpt-4",  # Change model
     temperature=0.3,     # Adjust creativity
     ...

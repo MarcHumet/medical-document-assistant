@@ -12,14 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from config import settings
-from auth import (
-    authenticate_user, 
-    create_access_token, 
-    get_current_user, 
-    Token, 
-    User
-)
-from document_processor import DocumentProcessor
+from src.auth import authenticate_user, create_access_token, get_current_user, Token, User
+from src.document_processor import DocumentProcessor
 
 # Configure logging
 logging.basicConfig(
@@ -88,7 +82,10 @@ async def health_check():
     """Health check endpoint."""
     return {
         "status": "healthy",
-        "openai_configured": bool(settings.openai_api_key)
+        "llm_provider": "ollama" if settings.use_ollama else "openai",
+        "embeddings_provider": "ollama" if settings.use_ollama_embeddings else "openai",
+        "openai_configured": bool(settings.openai_api_key),
+        "ollama_url": settings.ollama_base_url if settings.use_ollama else None
     }
 
 
@@ -155,7 +152,6 @@ async def upload_document(
     # Process document
     try:
         documents = doc_processor.process_document(file_path)
-        doc_processor.add_documents(documents)
         
         logger.info(f"Processed {file.filename}: {len(documents)} chunks created")
         

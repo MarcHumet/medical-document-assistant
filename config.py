@@ -12,8 +12,19 @@ load_dotenv()
 class Settings(BaseSettings):
     """Application settings."""
     
-    # OpenAI
+    # LLM Configuration
+    use_ollama: bool = os.getenv("USE_OLLAMA", "false").lower() == "true"
+    
+    # OpenAI Configuration
     openai_api_key: str = os.getenv("OPENAI_API_KEY", "")
+    
+    # Ollama Configuration
+    ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    ollama_model: str = os.getenv("OLLAMA_MODEL", "llama2")
+    
+    # Embedding Configuration
+    use_ollama_embeddings: bool = os.getenv("USE_OLLAMA_EMBEDDINGS", "false").lower() == "true"
+    ollama_embedding_model: str = os.getenv("OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
     
     # API Security
     api_secret_key: str = os.getenv("API_SECRET_KEY", "dev-secret-key-change-in-production")
@@ -30,6 +41,7 @@ class Settings(BaseSettings):
     
     class Config:
         env_file = ".env"
+        extra = "ignore"  # Ignore extra fields in .env
 
 
 settings = Settings()
