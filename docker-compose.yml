@@ -23,9 +23,14 @@ services:
       - "8000:8000"
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - LLM_PROVIDER=${LLM_PROVIDER:-ollama}
+      - LLM_ENDPOINT=${LLM_ENDPOINT:-http://ollama:11434/v1}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-3.5-turbo}
+      - OPENAI_EMBEDDING_MODEL=${OPENAI_EMBEDDING_MODEL:-text-embedding-ada-002}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2:1b}
+      - OLLAMA_EMBEDDING_MODEL=${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}
       - USE_OLLAMA=${USE_OLLAMA:-false}
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama2}
       - API_SECRET_KEY=${API_SECRET_KEY:-dev-secret-key-change-in-production}
       - DEMO_USERNAME=${DEMO_USERNAME:-medical_researcher}
       - DEMO_PASSWORD=${DEMO_PASSWORD:-demo_password_123}
