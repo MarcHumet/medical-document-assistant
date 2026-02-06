@@ -25,10 +25,10 @@ echo "✅ Ollama is running"
 
 # Pull required models
 echo "📥 Pulling $OLLAMA_MODEL model (this may take a while)..."
-ollama pull "$OLLAMA_MODEL"
+docker exec -it ollama ollama pull "$OLLAMA_MODEL"
 
 echo "📥 Pulling $OLLAMA_EMBEDDING_MODEL model for embeddings..."
-ollama pull "$OLLAMA_EMBEDDING_MODEL"
+docker exec -it ollama ollama pull "$OLLAMA_EMBEDDING_MODEL"
 
 echo "✅ Ollama models are ready!"
 echo ""
