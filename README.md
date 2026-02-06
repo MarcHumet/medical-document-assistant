@@ -108,7 +108,7 @@ medical-document-assistant/
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/MarcHumet/medical-document-assistant.git
    cd medical-document-assistant
    ```
 
