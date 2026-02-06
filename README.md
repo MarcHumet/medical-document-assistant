@@ -130,7 +130,18 @@ medical-document-assistant/
    - API: http://localhost:8000
    - API Documentation: http://localhost:8000/docs
 
-### Option 2: Development Mode
+### Option 2: MCP Server (AI Assistant Integration)
+
+The Medical Document Assistant includes a fully functional **Model Context Protocol (MCP) server** that enables AI assistants like Claude Desktop to directly access medical document processing capabilities.
+
+- **Status**: ✅ Fully developed and operational
+- **Features**: 5 medical document tools + 3 information resources
+- **Documentation**: Complete setup and usage instructions available
+- **Testing**: Comprehensive test suite included
+
+👉 **[See MCP Server Documentation](mcp_server/README.md)** for detailed setup instructions and usage guide.
+
+### Option 3: Development Mode
 
 ## 📋 Features
 
@@ -146,6 +157,7 @@ medical-document-assistant/
 - 📊 **Vector Search**: Efficient similarity search using ChromaDB and OpenAI embeddings
 - 🔄 **Hot Reload**: Development mode with auto-reload capabilities
 - 📝 **API Documentation**: Auto-generated OpenAPI/Swagger documentation
+- 🤖 **MCP Server**: Model Context Protocol server for AI assistant integration ([see MCP documentation](mcp_server/README.md))
 
 ## 🔧 Configuration
 
@@ -257,7 +269,7 @@ The modular architecture allows for easy maintenance and testing:
 AI assistance was used heavily to avoid 
 heavy coding to:
 1. create an initial folder structure and initial documentation of the repo
-2. generate docker
+2. generate docker structure
 
 3. Improving documentation.
 For instance a prompt to improve further developments:
@@ -274,6 +286,9 @@ For instance a prompt to improve further developments:
    set a KPI (rate of feedback, times LM answer s"no references found") to monitor performance
    Provide your additional suggestion separated, to be ckecked before joining them.
    ```
+4. Develope MCP server
+5. Generate unit&integrate testing code and also testing services inside dockers.
+6. Agent testing of full project and checking for inconsistencies.
 
 ### Testing
 
