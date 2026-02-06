@@ -158,8 +158,6 @@ chmod 755 ../logs
 - **upload_document**: Upload and process medical documents
 - **ask_document_question**: Ask questions using RAG
 - **search_documents**: Search for similar content
-- **summarize_document**: Generate document summaries
-- **extract_medical_entities**: Extract medical entities
 
 ## Available Resources
 - **medical-docs://uploaded-documents**: List uploaded documents

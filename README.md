@@ -157,7 +157,6 @@ To use a local LLM instead of OpenAI's API:
 The Medical Document Assistant includes a fully functional **Model Context Protocol (MCP) server** that enables AI assistants like Claude Desktop to directly access medical document processing capabilities.
 
 - **Status**: ✅ Fully developed and operational
-- **Features**: 5 medical document tools + 3 information resources
 - **Documentation**: Complete setup and usage instructions available
 - **Testing**: Comprehensive test suite included
 
