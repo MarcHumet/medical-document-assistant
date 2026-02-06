@@ -18,7 +18,7 @@ class ChromaVectorStore:
         self.collection_name = collection_name
         
         # Set up ChromaDB persistence path
-        self.persist_directory = os.getenv("VECTOR_STORE_PATH", "/app/chroma_db")
+        self.persist_directory = os.getenv("VECTOR_STORE_PATH", "./chroma_db")
         Path(self.persist_directory).mkdir(parents=True, exist_ok=True)
         
         logger.info(f"Initializing ChromaDB with persistence at: {self.persist_directory}")

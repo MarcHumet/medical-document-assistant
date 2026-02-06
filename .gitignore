@@ -21,8 +21,10 @@ wheels/
 *.egg
 .env
 .python-version
+pyproject.toml
 
 # Virtual Environment
+.venv
 venv/
 ENV/
 env/

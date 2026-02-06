@@ -15,7 +15,7 @@ from config import settings
 # Configure loguru
 logger.remove()  # Remove default handler
 logger.add(
-    "/app/logs/document_processor.log",
+    "./logs/document_processor.log",
     rotation="500 MB",
     retention="6 months",
     level="DEBUG",

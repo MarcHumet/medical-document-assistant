@@ -13,7 +13,7 @@ load_dotenv()
 # Configure loguru
 logger.remove()  # Remove default handler
 logger.add(
-    "/app/logs/embeddings.log",
+    "./logs/embeddings.log",
     rotation="500 MB",
     retention="6 months",
     level="DEBUG",

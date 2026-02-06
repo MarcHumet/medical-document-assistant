@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "medical-document-assistant": {
+      "command": "python",
+      "args": ["mcp_server.py"],
+      "cwd": "/path/to/medical-document-assistant",
+      "env": {
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "LLM_PROVIDER": "ollama",
+        "OLLAMA_MODEL": "llama3.2:1b",
+        "OLLAMA_EMBEDDING_MODEL": "nomic-embed-text",
+        "LLM_ENDPOINT": "http://localhost:11434/v1",
+        "UPLOAD_DIR": "uploads"
+      }
+    }
+  }
+}

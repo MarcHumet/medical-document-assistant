@@ -11,7 +11,7 @@ load_dotenv()
 
 # Configure loguru
 logger.remove()  # Remove default handler
-log_path = os.getenv("LOG_PATH", "/app/logs/chat_llm.log")
+log_path = os.getenv("LOG_PATH", "./logs/chat_llm.log")
 # Create directory if it doesn't exist
 os.makedirs(os.path.dirname(log_path), exist_ok=True)
 logger.add(

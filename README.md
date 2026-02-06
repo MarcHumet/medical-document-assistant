@@ -76,16 +76,29 @@ medical-document-assistant/
 │   ├── vector_store/             # Vector database
 │   │   ├── __init__.py
 │   │   ├── chroma_store.py      # ChromaDB implementation
+│   │   ├── chroma_store_persistent.py # Persistent ChromaDB
 │   │   └── embeddings.py       # OpenAI embeddings
 │   ├── __init__.py
 │   └── document_processor.py    # Main orchestrator
+├── test/                         # Testing files
+│   ├── test_ollama.py           # Standalone LLM tests
+│   ├── test_ollama.sh           # Docker-based LLM tests
+│   ├── test_pdf_upload.sh       # End-to-end workflow tests
+│   └── test_routes.py           # FastAPI test routes
 ├── app.py                        # Streamlit frontend
 ├── config.py                     # Configuration management
 ├── requirements.txt              # Python dependencies
 ├── Dockerfile                    # Container definition
-├── docker compose.yml           # Multi-service orchestration
+├── docker-compose.yml           # Multi-service orchestration
+├── docker-compose.ollama.yml    # Ollama-specific compose
 ├── start.sh                     # Startup script
+├── setup-ollama.sh              # Ollama setup script
 ├── .env.template                # Environment variables template
+├── .env.example                 # Environment example
+├── pyproject.toml               # Project metadata
+├── TESTING_GUIDE.md             # Testing documentation
+├── uploads/                     # Document upload directory
+├── logs/                        # Application logs
 └── README.md                    # This file
 ```
 
@@ -238,11 +251,7 @@ The modular architecture allows for easy maintenance and testing:
 2. **Different LLM providers**: Implement new classes in `src/llm/`
 3. **Alternative vector stores**: Add implementations in `src/vector_store/`
 4. **New API endpoints**: Extend `src/api/main.py`
-
-### Adding New Features
-
-1. **New document formats**: Extend `src/document_digestion/processor.py`
-2. **Different LLM providers**: Implement new classes in `src/llm/`
+5. **New test scenarios**: Add tests to `test/` directory
 
 ### Development path
 AI assistance was used heavily to avoid 
@@ -266,7 +275,6 @@ For instance a prompt to improve further developments:
    Provide your additional suggestion separated, to be ckecked before joining them.
    ```
 
-
 ### Testing
 
 ```bash
@@ -279,6 +287,8 @@ curl http://localhost:8000/health
 # Access interactive documentation
 open http://localhost:8000/docs
 ```
+
+For comprehensive testing instructions, see [TESTING_GUIDE.md](TESTING_GUIDE.md).
 
 ## 🐳 Docker Services
 
@@ -307,43 +317,26 @@ docker compose logs -f
 docker compose down
 
 # Rebuild services
-docker compose build -:
--no-cache
+docker compose build --no-cache
 ```
-In case, local LLM it is desired, install Ollama localy and proceed to charge LLM with the following steps:
+### Using Local LLM with Ollama (Optional)
 
-```bash
-docker compose up ollama -d
-```
+If you prefer to use a local LLM instead of OpenAI's API:
 
-And load model defined in .env
-```bash
-./setup-ollama.sh
-```
+1. **Start Ollama service:**
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.ollama.yml up -d
+   ```
 
+2. **Load models:**
+   ```bash
+   ./setup-ollama.sh
+   ```
 
-```bash
-docker compose up ollama -d
-```
-upload  LLM llama3.2:1b to ollama: (change the LLM model according your PC, needs, required performances...)
+3. **Verify models are loaded:**
+   Visit [http://localhost:11434/api/tags](http://localhost:11434/api/tags) in your browser
 
-```bash
-docker exec -it ollama ollama pull llama3.2:1b && docker exec -it ollama ollama pull nomic-embed-text
-docker exec -it medical-assistant-ollama ollama pull llama3.2:1b
-```
-
-
-to check with models are already uploaded in the Ollama docker, check in browser:
-
-[http://localhost:11434/api/tags](http://localhost:11434/api/tags)
-
-Start services with dockers It includes Ollama if required (avoid docker compose.ollama.yml in case you use an openai's API-Key (It can take up to 10-15 minutes depending on model and net's speed)
-
-)
-
-```bash
-docker compose -f docker compose.yml -f docker compose.ollama.yml up --build
-```
+**Note:** Model download can take 10-15 minutes depending on your internet speed and the model size. Make sure you have sufficient disk space and memory for the selected models.
 
 
 
@@ -357,7 +350,7 @@ docker compose -f docker compose.yml -f docker compose.ollama.yml up --build
    - Check API key permissions and billing status
 
 2. **Port Conflicts**:
-   - Change ports in `docker compose.yml` if 8000/8501 are in use
+   - Change ports in `docker-compose.yml` if 8000/8501 are in use
    - Update `API_URL` environment variable accordingly
 
 3. **Docker Build Issues**:
@@ -386,17 +379,8 @@ Contributions are welcome! Please:
 ---
 
 **Note**: This application is designed for research and educational purposes. For production use with real medical data, ensure proper security measures, data privacy compliance, and regulatory adherence.
-    model_name="gpt-4",  # Change model
-    temperature=0.3,     # Adjust creativity
-    ...
 
-
-
-### Modifying the Prompt
-
-Update `_get_qa_prompt()` in `document_processor.py` to customize how the AI responds.
-
-## Future Enhancements
+## 🚀 Future Enhancements
 
 ### Core Features & User Experience
 - [ ] **User Feedback System**: Implement thumbs up/down feedback mechanism for AI responses
@@ -485,19 +469,3 @@ Update `_get_qa_prompt()` in `document_processor.py` to customize how the AI res
 ### Deployment & Operations
 - [ ] **Deployment Guides**: Documentation for Docker and cloud deployments
 - [ ] **Plugin Architecture**: Allow third-party extensions for specialized medical tools
-
-## License
-
-This project is open source and available under the MIT License.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Support
-
-For issues and questions, please use the GitHub issue tracker.
-
----
-
-**Note**: This is a prototype for local development and research purposes. For production use, implement proper security, scalability, and compliance measures appropriate for handling medical data.
