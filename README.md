@@ -113,10 +113,12 @@ medical-document-assistant/
    ```
 
 2. **Configure environment:**
+   use provided .env (in the repo) or change it according your LLM configuration
    ```bash
-   cp .env.template .env
+   nano .env
    # Edit .env and add your OPENAI_API_KEY
    ```
+   If no changes, Ollama should be installed 
 
 3. **Start the application:**
    ```bash
@@ -129,6 +131,26 @@ medical-document-assistant/
    - Frontend: http://localhost:8501
    - API: http://localhost:8000
    - API Documentation: http://localhost:8000/docs
+
+### Using Local LLM with Ollama (Optional)
+Although this code should work with an openai valid api key set in the .env file, I strongly recomment using local LLM with Ollama, since i don't have a openai account i do no have a proper api-hey and it was not tested!!
+
+To use a local LLM instead of OpenAI's API:
+
+1. **Start Ollama service:**
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.ollama.yml up -d
+   ```
+
+2. **Load models:**
+   ```bash
+   ./setup-ollama.sh
+   ```
+
+3. **Verify models are loaded:**
+   Visit [http://localhost:11434/api/tags](http://localhost:11434/api/tags) in your browser and two models should appear in a json format.
+
+**Note:** Model download can take 10-15 minutes depending on your internet speed and the model size. Make sure you have sufficient disk space and memory for the selected models.   
 
 ### Option 2: MCP Server (AI Assistant Integration)
 
@@ -334,29 +356,6 @@ docker compose down
 # Rebuild services
 docker compose build --no-cache
 ```
-### Using Local LLM with Ollama (Optional)
-Although this code should work with an openai valid api key set in the .env file, I strongly recomment using local LLM with Ollama, since i don't have a openai account i do no have a proper api-hey and it was not tested!!
-
-To use a local LLM instead of OpenAI's API:
-
-1. **Start Ollama service:**
-   ```bash
-   docker compose -f docker-compose.yml -f docker-compose.ollama.yml up -d
-   ```
-
-2. **Load models:**
-   ```bash
-   ./setup-ollama.sh
-   ```
-
-3. **Verify models are loaded:**
-   Visit [http://localhost:11434/api/tags](http://localhost:11434/api/tags) in your browser
-
-**Note:** Model download can take 10-15 minutes depending on your internet speed and the model size. Make sure you have sufficient disk space and memory for the selected models.
-
-
-
-
 ## 🔧 Troubleshooting
 
 ### Common Issues
