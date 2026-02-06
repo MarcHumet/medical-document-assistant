@@ -19,7 +19,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-.env
+
 .python-version
 pyproject.toml
 
@@ -30,7 +30,7 @@ ENV/
 env/
 
 # Environment variables
-.env
+
 
 # IDEs
 .vscode/
