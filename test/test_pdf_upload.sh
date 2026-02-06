@@ -49,7 +49,7 @@ echo -e "${GREEN}✅ Authentication token obtained${NC}"
 echo -e "${BLUE}📍 Step 2: Using existing PDF document...${NC}"
 
 # Usar el documento PDF existente
-TEST_FILE="DA Technical Challenge.pdf"
+TEST_FILE="../DA Technical Challenge.pdf"
 
 if [[ -f "$TEST_FILE" ]]; then
     echo -e "${GREEN}✅ Found PDF document: $TEST_FILE${NC}"

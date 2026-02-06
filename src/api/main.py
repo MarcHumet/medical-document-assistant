@@ -14,6 +14,7 @@ from pydantic import BaseModel
 from config import settings
 from src.auth import authenticate_user, create_access_token, get_current_user, Token, User
 from src.document_processor import DocumentProcessor
+from test.test_routes import router as test_router
 
 # Configure logging
 logging.basicConfig(
@@ -40,6 +41,9 @@ app.add_middleware(
 
 # Initialize document processor
 doc_processor = DocumentProcessor()
+
+# Include test routes
+app.include_router(test_router, prefix="/api", tags=["testing"])
 
 
 # Models

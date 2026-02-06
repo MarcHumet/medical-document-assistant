@@ -83,7 +83,7 @@ medical-document-assistant/
 ├── config.py                     # Configuration management
 ├── requirements.txt              # Python dependencies
 ├── Dockerfile                    # Container definition
-├── docker-compose.yml           # Multi-service orchestration
+├── docker compose.yml           # Multi-service orchestration
 ├── start.sh                     # Startup script
 ├── .env.template                # Environment variables template
 └── README.md                    # This file
@@ -243,11 +243,30 @@ The modular architecture allows for easy maintenance and testing:
 
 1. **New document formats**: Extend `src/document_digestion/processor.py`
 2. **Different LLM providers**: Implement new classes in `src/llm/`
+
 ### Development path
 AI assistance was used heavily to avoid 
 heavy coding to:
 1. create an initial folder structure and initial documentation of the repo
 2. generate docker
+
+3. Improving documentation.
+For instance a prompt to improve further developments:
+   ```
+   please complete the readme file (do not change any line of code!) for "further development" section. Include these points:
+
+   implement user's feedback for response (tumb up/down)
+   implement ddbb to store user info, feedback, history,...
+   optimise chunking strategy
+   optimise vector store search (reranking models, metadata graphs)
+   optimise chunking strategy
+   search and test for edge cases and safety
+   semantic search
+   set a KPI (rate of feedback, times LM answer s"no references found") to monitor performance
+   Provide your additional suggestion separated, to be ckecked before joining them.
+   ```
+
+
 ### Testing
 
 ```bash
@@ -279,22 +298,22 @@ The application runs as two services:
 
 ```bash
 # Build and start services
-docker-compose up -d
+docker compose up -d
 
 # View logs
-docker-compose logs -f
+docker compose logs -f
 
 # Stop services
-docker-compose down
+docker compose down
 
 # Rebuild services
-docker-compose build -:
+docker compose build -:
 -no-cache
 ```
 In case, local LLM it is desired, install Ollama localy and proceed to charge LLM with the following steps:
 
 ```bash
-docker-compose up ollama -d
+docker compose up ollama -d
 ```
 
 And load model defined in .env
@@ -304,7 +323,7 @@ And load model defined in .env
 
 
 ```bash
-docker-compose up ollama -d
+docker compose up ollama -d
 ```
 upload  LLM llama3.2:1b to ollama: (change the LLM model according your PC, needs, required performances...)
 
@@ -318,12 +337,12 @@ to check with models are already uploaded in the Ollama docker, check in browser
 
 [http://localhost:11434/api/tags](http://localhost:11434/api/tags)
 
-Start services with dockers It includes Ollama if required (avoid docker-compose.ollama.yml in case you use an openai's API-Key (It can take up to 10-15 minutes depending on model and net's speed)
+Start services with dockers It includes Ollama if required (avoid docker compose.ollama.yml in case you use an openai's API-Key (It can take up to 10-15 minutes depending on model and net's speed)
 
 )
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.ollama.yml up --build
+docker compose -f docker compose.yml -f docker compose.ollama.yml up --build
 ```
 
 
@@ -338,7 +357,7 @@ docker compose -f docker-compose.yml -f docker-compose.ollama.yml up --build
    - Check API key permissions and billing status
 
 2. **Port Conflicts**:
-   - Change ports in `docker-compose.yml` if 8000/8501 are in use
+   - Change ports in `docker compose.yml` if 8000/8501 are in use
    - Update `API_URL` environment variable accordingly
 
 3. **Docker Build Issues**:
@@ -370,8 +389,8 @@ Contributions are welcome! Please:
     model_name="gpt-4",  # Change model
     temperature=0.3,     # Adjust creativity
     ...
-)
-```
+
+
 
 ### Modifying the Prompt
 
@@ -379,15 +398,93 @@ Update `_get_qa_prompt()` in `document_processor.py` to customize how the AI res
 
 ## Future Enhancements
 
+### Core Features & User Experience
+- [ ] **User Feedback System**: Implement thumbs up/down feedback mechanism for AI responses
+  - Add feedback endpoints to track response quality
+  - Store feedback data for model improvement insights
+  - Create user interface components for rating responses
+
+- [ ] **Database Implementation**: Set up comprehensive database system to store:
+  - User information and profiles
+  - User feedback and ratings
+  - Conversation history and sessions
+  - Document metadata and processing logs
+  - Analytics and usage patterns
+
+- [ ] **Document Management**: Delete, list, and search uploaded documents
+- [ ] **Conversation History Persistence**: Store and retrieve previous chat sessions
+
+### File Format & Integration Support
 - [ ] Support for more file formats (DOCX, HTML)
-- [ ] Multi-user database for authentication
-- [ ] Document management (delete, list, search)
-- [ ] Conversation history persistence
-- [ ] Advanced RAG techniques
-- [ ] MCP server integration
-- [ ] Batch processing
-- [ ] API rate limiting
-- [ ] Deployment guides (Docker, cloud)
+- [ ] **MCP Server Integration**: Model Context Protocol server implementation
+- [ ] **EHR System Integration**: Connect with Electronic Health Record systems
+- [ ] **Medical Database APIs**: Integration with PubMed, clinical trial databases
+
+### Performance Optimization
+- [ ] **Chunking Strategy Enhancement**: 
+  - Implement adaptive chunking based on document type and content structure
+  - Test different chunk sizes and overlap strategies
+  - Add semantic chunking to preserve context boundaries
+  - Consider hierarchical chunking for better information retrieval
+
+- [ ] **Vector Store Search Optimization**:
+  - Integrate reranking models (e.g., Cohere, sentence-transformers)
+  - Implement metadata-based filtering and graph relationships
+  - Add hybrid search (dense + sparse retrieval)
+  - Optimize embedding model selection for medical domain
+
+
+- [ ] **Semantic Search Implementation**:
+  - Add advanced semantic search capabilities beyond simple similarity
+  - Implement query expansion and reformulation
+  - Add multi-modal search for documents with images/tables
+  - Create domain-specific search filters for medical specialties
+
+### Advanced AI Features
+- [ ] **Multi-Agent RAG System**: Implement specialized agents for different medical domains
+- [ ] **Citation Quality Scoring**: Rank and score the relevance of source citations
+- [ ] **Medical Entity Recognition**: Extract and link medical entities (drugs, conditions, procedures)
+- [ ] **Temporal Analysis**: Track changes in medical conditions over time across documents
+
+### Quality Assurance & Monitoring
+- [ ] **Edge Cases & Safety Testing**:
+  - Test with malformed/corrupted documents
+  - Handle edge cases in document parsing and text extraction
+  - Implement content safety filters for inappropriate queries
+  - Add input validation and sanitization
+  - Test with various document sizes and formats
+
+- [ ] **Performance Monitoring & KPIs**:
+  - **Feedback Rate**: Track percentage of responses receiving user feedback
+  - **"No References Found" Rate**: Monitor frequency of LM responses without source citations
+  - **Response Time Metrics**: Track query processing and response generation times
+  - **User Engagement**: Monitor session duration and query frequency
+  - **Document Processing Success Rate**: Track successful vs failed document uploads
+  - **Search Accuracy**: Measure relevance of retrieved chunks to user queries
+
+### Technical Infrastructure
+- [ ] **API Rate Limiting**: Control API usage and prevent abuse
+- [ ] **Batch Processing**: Handle multiple documents simultaneously
+- [ ] **Caching Layer**: Implement Redis for frequently asked questions and document embeddings
+- [ ] **API Versioning**: Support multiple API versions for backward compatibility
+- [ ] **Background Job Processing**: Queue system for heavy document processing tasks
+- [ ] **Auto-scaling**: Kubernetes deployment with horizontal pod autoscaling
+
+### Security & Compliance
+- [ ] **HIPAA Compliance Features**: Implement audit logging, data encryption at rest, and access controls
+- [ ] **Role-based Access Control (RBAC)**: Different permission levels for researchers, clinicians, administrators
+- [ ] **Data Anonymization**: Automatic PII detection and redaction in medical documents
+- [ ] **Secure Multi-tenancy**: Isolation between different organizations or departments
+
+### Analytics & Insights
+- [ ] **Usage Analytics Dashboard**: Visual insights into user behavior and system performance
+- [ ] **Medical Terminology Insights**: Track most queried medical terms and concepts
+- [ ] **Document Utilization**: Identify which documents are most/least referenced
+- [ ] **A/B Testing Framework**: Test different RAG strategies and UI improvements
+
+### Deployment & Operations
+- [ ] **Deployment Guides**: Documentation for Docker and cloud deployments
+- [ ] **Plugin Architecture**: Allow third-party extensions for specialized medical tools
 
 ## License
 
