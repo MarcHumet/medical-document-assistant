@@ -335,8 +335,9 @@ docker compose down
 docker compose build --no-cache
 ```
 ### Using Local LLM with Ollama (Optional)
+Although this code should work with an openai valid api key set in the .env file, I strongly recomment using local LLM with Ollama, since i don't have a openai account i do no have a proper api-hey and it was not tested!!
 
-If you prefer to use a local LLM instead of OpenAI's API:
+To use a local LLM instead of OpenAI's API:
 
 1. **Start Ollama service:**
    ```bash
