@@ -10,6 +10,7 @@ mcp_server/
 ├── mcp_server.py              # CLI entry point for MCP server
 ├── mcp_config.json            # MCP server configuration
 ├── MCP_SETUP.md              # MCP setup and integration guide
+├── README.md                 # This documentation file
 ├── test_integration.py        # Integration tests
 ├── test_comprehensive.py      # Comprehensive functionality tests
 └── src/
@@ -40,51 +41,118 @@ python3 mcp_server.py --help
 
 #### Prerequisites
 Before running tests, ensure you have:
-1. Activated the Python virtual environment
-2. Docker services are running (for integration tests)
+1. **Python virtual environment activated**
+2. **Docker services running** (required for integration tests)
+3. **All dependencies installed** in the virtual environment
 
-#### Test Files Available
-- **test_integration.py**: Tests both MCP server and Docker services integration
-- **test_comprehensive.py**: Tests MCP tools and resources functionality
+#### Step-by-Step Testing Instructions
 
-#### Running Tests
-
-**Option 1: From project root directory**
+**Step 1: Verify Docker Services**
 ```bash
-cd /home/marc/project/medical-document-assistant
+# From project root directory
+cd /path_to_repository/medical-document-assistant
 
-# Activate virtual environment
-source .venv/bin/activate
+# Check Docker services status
+docker compose ps
 
-# Run integration tests (tests MCP + Docker services)
-cd mcp_server && python3 test_integration.py
+# If services are not running, start them:
+docker compose up -d
 
-# Run comprehensive tests (tests MCP functionality)
-python3 test_comprehensive.py
+# Wait for services to be healthy (about 30 seconds)
+# Verify API health
+curl -s http://localhost:8000/health
 ```
 
-**Option 2: From mcp_server directory**
+**Step 2: Activate Virtual Environment**
 ```bash
+# From project root directory
+source .venv/bin/activate
+
+# Verify MCP dependencies are installed
+python3 -c "import mcp; print('MCP package available')"
+```
+
+**Step 3: Run Tests**
+
+**Option A: Run from project root**
+```bash
+# Navigate to MCP server directory
 cd mcp_server
 
-# Activate virtual environment (adjust path as needed)
+# Run integration tests (tests both MCP server and Docker services)
+python3 test_integration.py
+
+# Expected output should show:
+# 🎉 ALL TESTS PASSED - Both MCP and Docker functionality working!
+
+# Run comprehensive functionality tests
+python3 test_comprehensive.py
+
+# Expected output should show:
+# 🎉 COMPREHENSIVE TEST PASSED
+```
+
+**Option B: Run from MCP server directory**
+```bash
+# Navigate directly to MCP server directory
+cd /home/marc/project/medical-document-assistant/mcp_server
+
+# Activate virtual environment (adjust path if different)
 source ../.venv/bin/activate
 
 # Run integration tests
 python3 test_integration.py
 
-# Run comprehensive MCP functionality tests  
+# Run comprehensive tests
 python3 test_comprehensive.py
 ```
 
-#### Expected Test Output
-- **✅ All tests passed**: Both MCP server and Docker services working
-- **❌ Tests failed**: Check Docker services status and virtual environment
+#### Test Details
 
-#### Test Dependencies
-- Docker services must be running for integration tests
-- Virtual environment must be activated
-- All MCP dependencies must be installed (`mcp>=0.9.0`, `click>=8.0.0`, etc.)
+**test_integration.py** verifies:
+- ✅ MCP CLI help functionality
+- ✅ MCP server initialization 
+- ✅ Configuration file validation
+- ✅ Docker API service health (port 8000)
+- ✅ Streamlit frontend availability (port 8501)
+
+**test_comprehensive.py** verifies:
+- ✅ MCP modules import correctly
+- ✅ DocumentProcessor initialization
+- ✅ All 5 MCP tools are available and functional
+- ✅ All 3 MCP resources are available and functional
+- ✅ Full component integration
+
+#### Troubleshooting Test Failures
+
+**If Docker tests fail:**
+```bash
+# Check Docker service status
+docker compose ps
+docker compose logs api
+docker compose logs frontend
+
+# Restart if needed
+docker compose down && docker compose up -d
+```
+
+**If MCP tests fail:**
+```bash
+# Verify virtual environment
+which python3
+pip list | grep mcp
+
+# Check import paths
+python3 -c "from mcp_server.src.server import MedicalDocumentMCPServer; print('Import OK')"
+```
+
+**If permission errors occur:**
+```bash
+# Check log directory permissions
+ls -la ../logs/
+mkdir -p ../logs
+chmod 755 ../logs
+```
 
 ## Available Tools
 - **upload_document**: Upload and process medical documents
