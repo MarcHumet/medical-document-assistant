@@ -165,7 +165,7 @@ cd test && ./test_ollama.sh
 ```
 
 **📅 When to use**:
-- After starting Docker services (`docker-compose up`)
+- After starting Docker services (`docker compose up`)
 - To verify inter-container communication
 - When debugging Docker networking issues
 - Before running the full application
@@ -173,7 +173,7 @@ cd test && ./test_ollama.sh
 
 **🚨 Prerequisites**:
 - Docker and Docker Compose installed
-- Containers running: `docker-compose up -d`
+- Containers running: `docker compose up -d`
 - Ollama container accessible as `ollama` in Docker network
 
 **✅ Expected output**:
@@ -301,7 +301,7 @@ cd test && ./test_pdf_upload.sh
 2. **Docker Development**:
    ```bash
    # 1. Start services
-   docker-compose up -d
+   docker compose up -d
    
    # 2. Test inter-container communication
    ./test/test_ollama.sh

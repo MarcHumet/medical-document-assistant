@@ -22,10 +22,10 @@ start_docker() {
     
     # Build and start services
     echo "🔨 Building Docker images..."
-    docker-compose build
+    docker compose build
     
     echo "🚀 Starting services..."
-    docker-compose up -d
+    docker compose up -d
     
     echo "✅ Services started!"
     echo "📍 API: http://localhost:8000"
@@ -35,7 +35,7 @@ start_docker() {
     # Follow logs
     echo ""
     echo "📋 Following logs (Ctrl+C to stop):"
-    docker-compose logs -f
+    docker compose logs -f
 }
 
 # Function to start with virtual environment (development)

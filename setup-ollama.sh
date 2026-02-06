@@ -17,7 +17,7 @@ OLLAMA_EMBEDDING_MODEL=${OLLAMA_EMBEDDING_MODEL:-"nomic-embed-text"}
 
 # Check if Ollama is running
 if ! curl -s http://localhost:11434/api/tags > /dev/null; then
-    echo "❌ Ollama is not running. Please start it with: docker-compose up ollama"
+    echo "❌ Ollama is not running. Please start it with: docker compose up ollama"
     exit 1
 fi
 
